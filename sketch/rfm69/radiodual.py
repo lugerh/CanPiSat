@@ -2,25 +2,21 @@ import subprocess
 import time
 import threading
 
-EXECUTABLE_PATH = "RadioHead/examples/raspi/rf69/rf69_client"
-mensaje_base = "TESTPYTHON"
 CLIENT_EXECUTABLE_PATH = "RadioHead/examples/raspi/rf69/rf69_client"
 SERVER_EXECUTABLE_PATH = "RadioHead/examples/raspi/rf69/rf69_server"
 base_message = "TESTPYTHON"
 
 counter = 0
 
-
 def send_messages():
+    global counter
     try:
         while True:
-
             message = f"{base_message} {counter}"
             print(f"Sending: {message}")
             subprocess.run([CLIENT_EXECUTABLE_PATH, message])
             counter += 1
             time.sleep(1)
-
     except KeyboardInterrupt:
         print("\nSending program interrupted. Ending test.")
 
@@ -42,8 +38,6 @@ if __name__ == '__main__':
 
     send_thread.start()
     listen_thread.start()
-
-
 
     send_thread.join()
     listen_thread.join()
