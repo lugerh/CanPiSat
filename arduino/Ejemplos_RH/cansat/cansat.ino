@@ -7,12 +7,12 @@
 // Tested on miniWireless with RFM69 www.anarduino.com/miniwireless
 // Tested on Teensy 3.1 with RF69 on PJRC breakout board
 
-#include <RHReliableDatagram.h>
+// #include <RHReliableDatagram.h>
 #include <RH_RF69.h>
 #include <SPI.h>
 
-#define CLIENT_ADDRESS 1
-#define SERVER_ADDRESS 2
+#define CANSAT 1
+#define BASE 2
 
 // Pines de conexión
 #define RFM69_INT 3 // DIO0
@@ -26,7 +26,7 @@
 RH_RF69 driver(RFM69_CS, RFM69_INT);
 
 // Class to manage message delivery and receipt, using the driver declared above
-RHReliableDatagram manager(driver, CLIENT_ADDRESS);
+// RHReliableDatagram manager(driver, CANSAT);
 
 void setup() 
 {
@@ -43,7 +43,7 @@ void setup()
 	delay(100); // Esperar un poco después del reset
 
 
-  if (!manager.init())
+  if (!driver.init())
     Serial.println("init failed");
   // Defaults after init are 434.0MHz, modulation GFSK_Rb250Fd250, +13dbM (for low power module)
 
@@ -58,7 +58,7 @@ void setup()
   delay(3000);
 }
 
-uint8_t data[] = "Hello World!";
+uint8_t data[] = "Soy un cansat xD";
 // Dont put this on the stack:
 uint8_t buf[RH_RF69_MAX_MESSAGE_LEN];
 
@@ -67,22 +67,23 @@ void loop()
   Serial.println("Sending to rf69_reliable_datagram_server");
     
   // Send a message to manager_server
-  if (manager.sendtoWait(data, sizeof(data), SERVER_ADDRESS))
+  // if (manager.sendtoWait(data, sizeof(data), BASE))
+  if (driver.send(data, sizeof(data)))
   {
     // // Now wait for a reply from the server
-    uint8_t len = sizeof(buf);
-    uint8_t from;   
-    if (manager.recvfromAckTimeout(buf, &len, 2000, &from))
-    {
-      Serial.print("got reply from : 0x");
-      Serial.print(from, HEX);
-      Serial.print(": ");
-      Serial.println((char*)buf);
-    }
-    else
-    {
-      Serial.println("No reply, is rf69_reliable_datagram_server running?");
-    }
+    // uint8_t len = sizeof(buf);
+    // uint8_t from;   
+    // if (manager.recvfromAckTimeout(buf, &len, 2000, &from))
+    // {
+    //   Serial.print("got reply from : 0x");
+    //   Serial.print(from, HEX);
+    //   Serial.print(": ");
+    //   Serial.println((char*)buf);
+    // }
+    // else
+    // {
+    //   Serial.println("No reply, is rf69_reliable_datagram_server running?");
+    // }
   }
   else
     Serial.println("sendtoWait failed");
